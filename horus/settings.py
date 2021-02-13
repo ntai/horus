@@ -79,14 +79,28 @@ WSGI_APPLICATION = 'horus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+class KeyValue:
+    def __init__(self, obj: dict):
+        self.obj = obj
+        pass
+    def __getattr__(self, item):
+        return self.obj.get(item)
+    pass
+
+import json
+with open("database.json") as dbfd:
+    database = KeyValue(json.load(dbfd).get("database"))
+    pass
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'horusdb',
-        'USER': 'horusdb',
-        'PASSWORD': 'egyptiangod',
-        'HOST': 'nefertiti.cleanwinner.com',
-        'PORT': ''
+        'NAME': database.name,
+        'USER': database.username,
+        'PASSWORD': database.password,
+        'HOST': database.host,
+        'PORT': database.port
     }
 }
 

@@ -1,7 +1,8 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from ..models import Current
+from rest_framework.request import Request
 
-class IsOwnerOrReadOnly(BasePermission):
+class IsAuthenticated(BasePermission):
     message = 'You must be the owner of this object.'
     # my_safe_method = ['GET', 'PUT']
     # def has_permission(self, request, view):
@@ -9,13 +10,13 @@ class IsOwnerOrReadOnly(BasePermission):
     #         return True
     #     return False
 
-    def has_object_permission(self, request, view, obj : Current) -> bool:
+    def has_object_permission(self, request:Request, view, obj : Current) -> bool:
         #member = Membership.objects.get(user=request.user)
         #member.is_active
         if request.method in SAFE_METHODS:
             return True
         # Note that obj.owner can be None
-        return request.user.is_superuser or request.user.is_staff or request.user == obj.owner
+        return request.user.is_superuser or request.user.is_staff or request.user.is_authenticated
     pass
 
 
